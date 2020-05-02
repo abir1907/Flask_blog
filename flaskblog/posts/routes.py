@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect, request, abort, Blueprint
+from flask import render_template, url_for, flash, redirect, request, abort, Blueprint, jsonify
 from flaskblog import db
 from flaskblog.posts.forms import PostForm
 from flaskblog.models import Post
@@ -55,3 +55,10 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('main.home'))
+
+
+@posts.route('/post/api/<int:post_id>')
+def post_api(post_id):
+    post = Post.query.get_or_404(post_id)
+    # return jsonify({'title': post.title, 'content': post.content})
+    return jsonify(title=post.title, content=post.content)

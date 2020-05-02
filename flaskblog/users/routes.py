@@ -3,7 +3,7 @@ from flaskblog import db, bcrypt
 from flaskblog.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, RequestResetForm, ResetPasswordForm
 from flaskblog.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
-from flaskblog.users.utils import save_picture,send_reset_email
+from flaskblog.users.utils import save_picture, send_reset_email
 
 users = Blueprint('users', __name__)
 
@@ -40,10 +40,11 @@ def login():
     return render_template('login.html', title='Login', form=form)
 
 
-@users.route('/logout')
+@users.route('/logout', methods=['POST'])
 def logout():
-    logout_user()
-    return redirect(url_for('main.home'))
+    if request.method == 'POST':
+        logout_user()
+        return redirect(url_for('main.home'))
 
 
 @users.route('/account', methods=['GET', 'POST'])
@@ -104,4 +105,3 @@ def reset_token(token):
         flash('Your password has been updated. You are now able to log in.', 'success')
         return redirect(url_for('users.login'))
     return render_template('reset_token.html', title='Reset Password', form=form)
-
